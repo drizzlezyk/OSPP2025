@@ -1,0 +1,51 @@
+# Translation Agent Configuration
+translation_agent:
+  # Backend Configuration
+  backend:
+    type: "siliconflow"  # Options: "ollama" or "siliconflow"
+    siliconflow:
+      api_key: "" # API Key for siliconflow
+      api_base: "https://api.siliconflow.cn/v1"
+    ollama:
+      base_url: "http://localhost:11434"
+  
+  # Model Configuration
+  model:
+    name: "Qwen/Qwen3-8B"  # Options: "llama3" or "Qwen/Qwen3-8B"
+    temperature: 0.1
+    max_retry: 5  # For siliconflow backend
+    max_retry_ollama: 1  # For ollama backend
+  
+  # Processing Configuration
+  processing:
+    max_workers: 8  # Number of parallel workers for file processing
+    single_file_timeout: 180  # Timeout for single file summary generation (seconds)
+    total_summary_timeout: 300  # Timeout for total summary generation (seconds)
+  
+  # Logging Configuration
+  logging:
+    level: "INFO"
+
+# Issue Creation Configuration
+orgs:
+  - org_name: openeuler
+    issue_of_owner: openeuler
+    issue_of_repo: globalization
+    auto_create_issue: true
+    issue_triggers:
+      - trigger_pr_path: 'docs/zh'
+        issue_title: "[Auto] This is an English translation issue for the PR"
+        issue_assignee: judithsq
+        file_extension: [ doc, md, json ]
+    change_content_exclude: [ ',', '，', '.', '。', ';', '；', ':', '：', '"', '“', '”', '、' ]
+
+  - org_name: src-openeuler
+    issue_of_owner: openeuler
+    issue_of_repo: globalization
+    auto_create_issue: true
+    issue_triggers:
+      - trigger_pr_path: 'docs/zh'
+        issue_title: "[Auto] This is an English translation issue for the PR"
+        issue_assignee: judithsq
+        file_extension: [ doc, md, json ]
+    change_content_exclude: [ ',', '，', '.', '。', ';', '；', ':', '：', '"', '“', '”', '、' ]
