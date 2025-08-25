@@ -3,9 +3,7 @@ translation_agent:
   # Backend Configuration
   backend:
     type: "siliconflow"  # Options: "ollama" or "siliconflow"
-    siliconflow:
-      api_key: "" # API Key for siliconflow
-      api_base: "https://api.siliconflow.cn/v1"
+    # siliconflow配置现在通过命令行参数传入
     ollama:
       base_url: "http://localhost:11434"
   

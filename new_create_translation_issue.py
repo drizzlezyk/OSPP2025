@@ -232,6 +232,8 @@ class Args:
     pr_owner: str
     pr_repo: str
     pr_number: int
+    siliconflow_api_key: str = ""
+    siliconflow_api_base: str = "https://api.siliconflow.cn/v1"
 
     def validate(self):
         valid = self.gitee_token and self.pr_owner and self.pr_repo and self.pr_number
@@ -250,7 +252,7 @@ def load_config_yaml(yaml_path):
 
 
 def create_issue_based_on_pr_diff_and_config(conf: Config, cli: GiteeClient, pr_owner: str, pr_repo: str,
-                                             pr_number: int):
+                                             pr_number: int, siliconflow_api_key: str, siliconflow_api_base: str):
     pr__html_url = "https://gitee.com/{}/{}/pulls/{}".format(pr_owner, pr_repo, pr_number)
     for org_item in conf.orgs:
         issue_title_pr_mark = "{}/{}/pulls/{}".format(pr_owner, pr_repo, pr_number)
@@ -311,7 +313,7 @@ def create_issue_based_on_pr_diff_and_config(conf: Config, cli: GiteeClient, pr_
                 cli.add_pr_comment(pr_owner, pr_repo, pr_number, feedback_comment)
             for need_create_issue_item in need_create_issue_list:
                 
-                issue_summary = get_agent_summary(diff_content)
+                issue_summary = get_agent_summary(diff_content, siliconflow_api_key, siliconflow_api_base)
                 issue_body = ""
                 if issue_summary and not issue_summary.error:
                     issue_body += f"## 📊 变更统计\n\n"
@@ -356,6 +358,8 @@ def main():
     parser.add_argument('--pr_owner', type=str, required=True, help='the PR of owner')
     parser.add_argument('--pr_repo', type=str, required=True, help='the PR of repo')
     parser.add_argument('--pr_number', type=str, required=True, help='the PR number')
+    parser.add_argument('--siliconflow_api_key', type=str, default="", help='the API key of siliconflow')
+    parser.add_argument('--siliconflow_api_base', type=str, default="https://api.siliconflow.cn/v1", help='the base URL of siliconflow')
     args = Args()
     parser.parse_args(args=sys.argv[1:], namespace=args)
     args.validate()
@@ -369,7 +373,9 @@ def main():
     pr_owner = args.pr_owner
     pr_repo = args.pr_repo
     pr_number = args.pr_number
-    create_issue_based_on_pr_diff_and_config(conf, cli, pr_owner, pr_repo, pr_number)
+    siliconflow_api_key = args.siliconflow_api_key
+    siliconflow_api_base = args.siliconflow_api_base
+    create_issue_based_on_pr_diff_and_config(conf, cli, pr_owner, pr_repo, pr_number, siliconflow_api_key, siliconflow_api_base)
 
 
 if __name__ == '__main__':

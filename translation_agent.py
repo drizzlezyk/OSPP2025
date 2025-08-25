@@ -40,8 +40,6 @@ _config = load_config()
 # ==================== 配置常量 ====================
 
 BACKEND_TYPE = _config.get('backend', {}).get('type', 'siliconflow')
-SILICONFLOW_API_KEY = _config.get('backend', {}).get('siliconflow', {}).get('api_key', '')
-SILICONFLOW_API_BASE = _config.get('backend', {}).get('siliconflow', {}).get('api_base', 'https://api.siliconflow.cn/v1')
 OLLAMA_BASE_URL = _config.get('backend', {}).get('ollama', {}).get('base_url', 'http://localhost:11434')
 MODEL_NAME = _config.get('model', {}).get('name', 'Qwen/Qwen3-8B')
 MODEL_TEMPERATURE = _config.get('model', {}).get('temperature', 0.1)
@@ -51,6 +49,8 @@ PROCESSING_MAX_WORKERS = _config.get('processing', {}).get('max_workers', 8)
 SINGLE_FILE_TIMEOUT = _config.get('processing', {}).get('single_file_timeout', 180)
 TOTAL_SUMMARY_TIMEOUT = _config.get('processing', {}).get('total_summary_timeout', 300)
 LOGGING_LEVEL = _config.get('logging', {}).get('level', 'INFO')
+SILICONFLOW_API_KEY = ''
+SILICONFLOW_API_BASE =''
 
 # 配置日志
 logging.basicConfig(level=getattr(logging, LOGGING_LEVEL.upper()))
@@ -685,11 +685,19 @@ class TotalSummaryChain:
 class GitDiffSummarizer:
     """Git Diff 摘要生成器"""
     
-    def __init__(self, model_name: str = None, base_url: str = None):
+    def __init__(self, siliconflow_api_key: str = "", siliconflow_api_base: str = "https://api.siliconflow.cn/v1", model_name: str = None, base_url: str = None):
         if model_name is None:
             model_name = MODEL_NAME
         if base_url is None:
             base_url = OLLAMA_BASE_URL
+        
+        # 设置siliconflow API配置
+        global SILICONFLOW_API_KEY, SILICONFLOW_API_BASE
+        if siliconflow_api_key:
+            SILICONFLOW_API_KEY = siliconflow_api_key
+        if siliconflow_api_base:
+            SILICONFLOW_API_BASE = siliconflow_api_base
+            
         self.token_counter = TokenCounter(model_name)
         self.llm = LLMFactory.create_chat_llm(model_name, base_url)
         self.single_file_chain = SingleFileAnalysisChain(self.llm, self.token_counter)
@@ -750,9 +758,9 @@ class GitDiffSummarizer:
 
 # ==================== 主函数 ====================
 
-def get_agent_summary(sample_diff):
+def get_agent_summary(sample_diff, siliconflow_api_key="", siliconflow_api_base="https://api.siliconflow.cn/v1"):
 
-    summarizer = GitDiffSummarizer()
+    summarizer = GitDiffSummarizer(siliconflow_api_key, siliconflow_api_base)
     result = summarizer.process_git_diff(sample_diff)
 
     if result.error:
