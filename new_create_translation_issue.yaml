@@ -26,8 +26,8 @@ translation_agent:
 
 # Issue Creation Configuration
 orgs:
-  - org_name: openeuler
-    issue_of_owner: openeuler
+  - org_name: drizzlezyk
+    issue_of_owner: drizzlezyk
     issue_of_repo: globalization
     auto_create_issue: true
     issue_triggers:
@@ -37,13 +37,13 @@ orgs:
         file_extension: [ doc, md, json ]
     change_content_exclude: [ ',', '，', '.', '。', ';', '；', ':', '：', '"', '“', '”', '、' ]
 
-  - org_name: src-openeuler
-    issue_of_owner: openeuler
-    issue_of_repo: globalization
-    auto_create_issue: true
-    issue_triggers:
-      - trigger_pr_path: 'docs/zh'
-        issue_title: "[Auto] This is an English translation issue for the PR"
-        issue_assignee: judithsq
-        file_extension: [ doc, md, json ]
-    change_content_exclude: [ ',', '，', '.', '。', ';', '；', ':', '：', '"', '“', '”', '、' ]
+  # - org_name: src-openeuler
+  #   issue_of_owner: openeuler
+  #   issue_of_repo: globalization
+  #   auto_create_issue: true
+  #   issue_triggers:
+  #     - trigger_pr_path: 'docs/zh'
+  #       issue_title: "[Auto] This is an English translation issue for the PR"
+  #       issue_assignee: judithsq
+  #       file_extension: [ doc, md, json ]
+  #   change_content_exclude: [ ',', '，', '.', '。', ';', '；', ':', '：', '"', '“', '”', '、' ]
